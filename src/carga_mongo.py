@@ -1,13 +1,19 @@
 import sys
 from pathlib import Path
+from venv import logger
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from sqlalchemy import create_engine, text
-from config import POSTGRES_URL
 from pymongo import MongoClient
-from config import MONGO_URL
 import pandas as pd
 import logging,sys
-from venv import logger
+#from venv import logger
+from config import MONGO_URL,POSTGRES_URL
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    force=True
+)
+logger = logging.getLogger(__name__)
 
 def resumir(df: pd.DataFrame) -> list[dict]:
     """Deriva um documento-resumo por moeda."""
@@ -36,6 +42,5 @@ def main() -> None:
     colecao.insert_many(documentos)
     logger.info("resumo gravado: %d documentos", len(documentos))
     cliente.close()
-
 if __name__ == "__main__":
     main()
